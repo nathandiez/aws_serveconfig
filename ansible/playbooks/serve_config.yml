@@ -174,6 +174,16 @@
         group: "{{ app_user }}" # Match dir owner
         mode: '0644' # Config files usually don't need execute
 
+    - name: Replace placeholders in config files with environment values
+      ansible.builtin.replace:
+        path: "{{ config_dir }}/pico_iot_config.json"
+        regexp: "{{ item.placeholder }}"
+        replace: "{{ item.value }}"
+      loop:
+        - { placeholder: "PLACEHOLDER_MQTT_BROKER", value: "{{ lookup('env', 'MQTT_BROKER_IP') }}" }
+        - { placeholder: "PLACEHOLDER_API_KEY", value: "{{ lookup('env', 'API_KEY') }}" }
+        - { placeholder: "PLACEHOLDER_HOSTNAME", value: "{{ lookup('env', 'INTERNAL_HOSTNAME') }}" }
+
     # --------------------------------------------------------------------------
     # Docker Build and Run
     # --------------------------------------------------------------------------
@@ -234,4 +244,3 @@
       listen: Restart avahi-daemon # Explicitly listen for the notification topic
 
     # --- Removed 'Apply netplan configuration' handler ---
-

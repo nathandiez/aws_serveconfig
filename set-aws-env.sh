@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-export AWS_PROFILE=default
-export AWS_DEFAULT_REGION=us-east-1
-echo "Configure with: aws configure"
+# Load environment variables from .env file
+
+if [ -f .env ]; then
+    set -a  # automatically export all variables
+    source .env
+    set +a
+else
+    echo "Error: .env file not found. Copy .env.example to .env and configure your settings."
+    exit 1
+fi
