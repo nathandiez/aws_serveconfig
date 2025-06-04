@@ -1,0 +1,17 @@
+# update_configs.yml - Playbook for updating just the config files
+- name: Update config files only
+  hosts: serve_config_servers
+  become: yes
+  vars:
+    config_source_dir: "../../config_files/"
+    config_dir: /etc/serve_config
+    app_user: "{{ ansible_user | default('nathan') }}"  # Add this line
+
+  tasks:
+    - name: Copy config files to volume directory
+      copy:
+        src: "{{ config_source_dir }}"
+        dest: "{{ config_dir }}/"
+        owner: "{{ app_user }}"        # Use app_user instead
+        group: "{{ app_user }}"        # Use app_user instead
+        mode: '0644'
